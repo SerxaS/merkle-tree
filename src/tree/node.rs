@@ -4,7 +4,7 @@ use std::collections::HashMap;
 use tiny_keccak::{Hasher, Sha3};
 
 pub(crate) fn new() -> Vec<[u8; 32]> {
-    let number_of_leaf = 4;
+    let number_of_leaf = 8;
     let rng = thread_rng();
     let mut leafs = Vec::new();
 
