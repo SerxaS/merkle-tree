@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use crate::tree::node::{build_tree, hashed_leafs, leaf, to_hex_string};
+    use crate::tree::build_tree::{build_tree, hashed_leafs, leaf, to_hex_string};
 
     #[test]
     fn test() {
