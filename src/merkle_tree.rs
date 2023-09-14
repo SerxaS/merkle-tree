@@ -5,7 +5,8 @@ mod tests {
     #[test]
     fn test() {
         let number_of_leaf = 8;
-        let merkle_root = build_tree(hashed_leafs(leaf(number_of_leaf)));
-        println!("Merkle Root:{:?}", to_hex_string(merkle_root)[0]);
+        let leafs = hashed_leafs(leaf(number_of_leaf));
+        println!("Leafs:{:?}", to_hex_string(leafs.clone()));
+        build_tree(leafs);
     }
 }
