@@ -1,10 +1,11 @@
 #[cfg(test)]
 mod tests {
-    use crate::tree::node::{new, to_hex_string};
+    use crate::tree::node::{build_tree, hashed_leafs, leaf, to_hex_string};
 
     #[test]
     fn test() {
-        let a = new();
-        println!("{:?}", to_hex_string(a));
+        let number_of_leaf = 8;
+        let merkle_root = build_tree(hashed_leafs(leaf(number_of_leaf)));
+        println!("Merkle Root:{:?}", to_hex_string(merkle_root)[0]);
     }
 }
