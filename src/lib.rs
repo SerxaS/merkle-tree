@@ -1,2 +1,3 @@
 mod merkle_tree;
-pub mod poseidon;
+mod merkle_tree_tools;
+mod poseidon;
