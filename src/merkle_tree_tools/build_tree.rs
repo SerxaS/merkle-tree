@@ -7,7 +7,6 @@ use std::collections::HashMap;
 pub struct MerkleTree {
     pub(crate) node: HashMap<u32, Vec<Fr>>,
     pub(crate) root: Fr,
-    pub(crate) height: u32,
 }
 
 impl MerkleTree {
@@ -32,8 +31,7 @@ impl MerkleTree {
             node.insert(layer_idx, layer.clone());
         }
         let root = node[&(node.len() as u32)][0];
-        let height = (node.len() as u32) - 1;
-        let tree = MerkleTree { node, root, height };
+        let tree = MerkleTree { node, root };
         tree
     }
 }
