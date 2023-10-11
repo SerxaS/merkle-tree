@@ -1,3 +1,4 @@
+//! # Hashes given field elements with PoseidonHash.
 use crate::poseidon::sponge::PoseidonSponge;
 use halo2::halo2curves::bn256::Fr;
 
@@ -10,6 +11,7 @@ impl HashLeaves {
         Self { leaves }
     }
 
+    /// Hashes given Fr values.
     pub(crate) fn hash_leaves(&self) -> Self {
         let mut hashed_leaves = HashLeaves::new(Vec::new());
 
