@@ -4,21 +4,21 @@ use halo2::halo2curves::bn256::Fr;
 use std::collections::HashMap;
 
 #[derive(Debug)]
-pub struct Path<const H: usize> {
-    pub(crate) path: [[Fr; 2]; H],
+pub struct Proof<const H: usize, const L: usize> {
+    pub(crate) path: [[Fr; 2]; L],
 }
 
-impl<const H: usize> Path<H> {
-    pub fn find_path<const HEIGHT: usize>(tree: MerkleTree, leaf_for_proof_hash: Fr) -> Self {
-        let mut path_values = HashMap::new();
+impl<const H: usize, const L: usize> Proof<H, L> {
+    /// Finds the path of value for proof.
+    pub fn find_path(tree: MerkleTree, leaf_for_proof_hash: Fr) -> Self {
+        let mut path = [[Fr::zero(); 2]; L];
+        path[H] = [tree.root, Fr::zero()];
         let mut proof_tree = HashMap::new();
         let mut layer_idx = 1;
-        let mut path_idx = 0;
         proof_tree.insert(layer_idx, leaf_for_proof_hash);
 
-        for i in 1..tree.node.len() as u32 {
+        for i in 1..tree.node.len() {
             layer_idx += 1;
-            path_idx += 1;
             let mut layer = Vec::new();
             let idx = tree.node[&i]
                 .iter()
@@ -38,32 +38,23 @@ impl<const H: usize> Path<H> {
                 let squeeze = PoseidonSponge::squeeze(&mut sponge);
                 layer.push(squeeze);
                 proof_tree.insert(layer_idx, layer[0]);
-                path_values.insert(path_idx, concatenate_leaves);
+                path[i - 1] = concatenate_leaves;
             }
         }
-        path_values.insert(H, [tree.root, Fr::zero()]);
-        let mut binary_values = [[Fr::zero(); 2]; H];
-        binary_values[H - 1] = path_values[&H];
-
-        for i in 1..H {
-            binary_values[i - 1] = path_values[&(i)];
-        }
-        let path = Path {
-            path: binary_values,
-        };
-        path
+        Proof { path }
     }
 
+    /// Finds the path's root and compare it with original root.
     pub fn verify(&self, tree: MerkleTree) -> bool {
         let mut proof_root = [Fr::zero(); H];
 
-        for i in 0..(H - 1) {
+        for i in 0..H {
             let mut sponge = PoseidonSponge::new();
             sponge.update(&self.path[i]);
             proof_root[i] = PoseidonSponge::squeeze(&mut sponge);
         }
 
-        if proof_root[H - 2] == tree.root {
+        if *proof_root.last().unwrap() == tree.root {
             true
         } else {
             false
