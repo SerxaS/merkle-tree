@@ -14,9 +14,10 @@ mod tests {
         // Creates first layer of tree with given number.
         let number_of_leaf = 5;
         // Builds a tree with given number, i.e. the power of 2 that is closest to the total
-        // number of leaves is height of tree(H) and  one more is level of tree(L).
+        // number of leaves is height of tree(H) and 1 more is level of tree(L).
         const H: usize = 3;
         const L: usize = 4;
+        assert!(H < L, "Level must be 1 more than height!");
 
         let rng = thread_rng();
         let leaves = &HashLeaves::new(
@@ -52,9 +53,10 @@ mod tests {
         // Creates first layer of tree with given number.
         let number_of_leaf = 2;
         // Builds a tree with given number, i.e. the power of 2 that is closest to the total
-        // number of leaves is height of tree(H) and  one more is level of tree(L).
+        // number of leaves is height of tree(H) and 1 more is level of tree(L).
         const H: usize = 5;
         const L: usize = 6;
+        assert!(H < L, "Level must be 1 more than height!");
 
         let rng = thread_rng();
         let leaves = &HashLeaves::new(
