@@ -2,7 +2,7 @@ pub mod params;
 /// Native sponge implementation
 pub mod sponge;
 use self::params::hasher::{poseidon_bn254_5x5::Params, RoundParams, Sbox};
-use halo2::halo2curves::bn256::Fr;
+use halo2curves::bn256::Fr;
 
 type P = Params;
 /// Constructs objects.
@@ -92,10 +92,9 @@ impl Poseidon {
 
 #[cfg(test)]
 mod test {
-    use crate::poseidon::params::hasher::hex_to_field;
-
     use super::*;
-    use halo2::halo2curves::bn256::Fr;
+    use crate::poseidon::params::hasher::hex_to_field;
+    use halo2curves::bn256::Fr;
 
     type TestPoseidon = Poseidon;
 

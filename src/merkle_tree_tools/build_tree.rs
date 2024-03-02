@@ -1,6 +1,5 @@
-use super::hash_leaves::HashLeaves;
 use crate::poseidon::sponge::PoseidonSponge;
-use halo2::halo2curves::bn256::Fr;
+use halo2curves::bn256::Fr;
 use std::collections::HashMap;
 
 #[derive(Debug, Clone)]
@@ -10,13 +9,29 @@ pub struct MerkleTree {
 }
 
 impl MerkleTree {
-    /// Builds tree with given Fr elements and finds the root of tree.
-    pub(crate) fn build_tree(hashed_leaves: HashLeaves) -> Self {
-        let mut node: HashMap<usize, Vec<Fr>> = HashMap::new();
-        let mut layer_idx = 1;
-        node.insert(layer_idx, hashed_leaves.leaves.clone());
+    /// Hashes given Fr values.
+    pub(crate) fn hash_leaves(leaves: Vec<Fr>) -> Vec<Fr> {
+        let mut hashed_leaves = Vec::new();
 
-        for i in 1..(hashed_leaves.leaves.len().checked_ilog2().unwrap() + 1) as usize {
+        for i in leaves {
+            let mut leaf = Vec::new();
+            leaf.push(i);
+            let mut sponge = PoseidonSponge::new();
+            sponge.update(&leaf);
+            let squeeze = PoseidonSponge::squeeze(&mut sponge);
+            hashed_leaves.push(squeeze);
+        }
+        hashed_leaves
+    }
+
+    /// Builds tree with given Fr elements and finds the root of tree.
+    pub(crate) fn build_tree(hashed_leaves: Vec<Fr>) -> Self {
+        let mut node = HashMap::new();
+        // 0th level is the leaf level and the max level is the root level.
+        let mut layer_idx = 0;
+        node.insert(layer_idx, hashed_leaves.clone());
+
+        for i in 0..hashed_leaves.len().checked_ilog2().unwrap() as usize {
             layer_idx += 1;
             let mut layer = Vec::new();
 
@@ -31,8 +46,7 @@ impl MerkleTree {
             }
             node.insert(layer_idx, layer.clone());
         }
-        let root = node[&(node.len())][0];
-        let tree = MerkleTree { node, root };
-        tree
+        let root = node[&(node.len() - 1)][0];
+        MerkleTree { node, root }
     }
 }

@@ -1,5 +1,5 @@
 use super::Poseidon;
-use halo2::{arithmetic::Field, halo2curves::bn256::Fr};
+use halo2curves::{bn256::Fr, ff::Field};
 
 /// Constructs objects.
 #[derive(Clone, Debug)]

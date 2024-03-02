@@ -1,5 +1,5 @@
 use super::*;
-use halo2::halo2curves::bn256::Fr;
+use halo2curves::bn256::Fr;
 
 #[derive(Clone, Debug)]
 /// Configures a structure.

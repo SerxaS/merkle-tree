@@ -7,5 +7,6 @@ edition = "2021"
 
 [dependencies]
 rand = "0.8"
-halo2 = { package = "halo2_proofs", git = "https://github.com/privacy-scaling-explorations/halo2", tag = "v2023_04_20" }
+halo2_proofs = "0.3.0"
+halo2curves = "0.6.1"
 hex = { version = "0.4", default-features = false, features = ["alloc"] }

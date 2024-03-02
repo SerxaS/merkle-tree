@@ -1,9 +1,9 @@
 /// Poseidon Bn254 with 5 = 5 and EXPONENTIATION = 5
 pub mod poseidon_bn254_5x5;
-
-use halo2::arithmetic::Field;
-use halo2::halo2curves::bn256::Fr;
-use halo2::halo2curves::ff::FromUniformBytes;
+use halo2curves::{
+    bn256::Fr,
+    ff::{Field, FromUniformBytes},
+};
 use std::fmt::Debug;
 
 /// Trait definition of Round parameters of Poseidon

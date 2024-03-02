@@ -1,6 +1,6 @@
 use super::build_tree::MerkleTree;
 use crate::poseidon::sponge::PoseidonSponge;
-use halo2::halo2curves::bn256::Fr;
+use halo2curves::bn256::Fr;
 use std::collections::HashMap;
 
 #[derive(Debug)]
@@ -10,14 +10,15 @@ pub struct Proof<const H: usize, const L: usize> {
 
 impl<const H: usize, const L: usize> Proof<H, L> {
     /// Finds the path of value for proof.
-    pub fn find_path(tree: MerkleTree, leaf_for_proof_hash: Fr) -> Self {
+    pub fn find_path(tree: MerkleTree, value_for_proof_hash: Fr) -> Self {
         let mut path = [[Fr::zero(); 2]; L];
         path[H] = [tree.root, Fr::zero()];
-        let mut proof_tree = HashMap::new();
-        let mut layer_idx = 1;
-        proof_tree.insert(layer_idx, leaf_for_proof_hash);
 
-        for i in 1..tree.node.len() {
+        let mut proof_tree = HashMap::new();
+        let mut layer_idx = 0;
+        proof_tree.insert(layer_idx, value_for_proof_hash);
+
+        for i in 0..tree.node.len() - 1 {
             layer_idx += 1;
             let mut layer = Vec::new();
             let idx = tree.node[&i]
@@ -26,19 +27,19 @@ impl<const H: usize, const L: usize> Proof<H, L> {
                 .unwrap();
 
             for _ in 0..1 {
-                let mut concatenate_leaves = [Fr::zero(); 2];
+                let mut concat_leaves = [Fr::zero(); 2];
 
                 if idx % 2 == 0 {
-                    concatenate_leaves = [tree.node[&i][idx], tree.node[&i][idx + 1]];
+                    concat_leaves = [tree.node[&i][idx], tree.node[&i][idx + 1]];
                 } else {
-                    concatenate_leaves = [tree.node[&i][idx - 1], tree.node[&i][idx]];
+                    concat_leaves = [tree.node[&i][idx - 1], tree.node[&i][idx]];
                 }
                 let mut sponge = PoseidonSponge::new();
-                sponge.update(&concatenate_leaves);
+                sponge.update(&concat_leaves);
                 let squeeze = PoseidonSponge::squeeze(&mut sponge);
                 layer.push(squeeze);
                 proof_tree.insert(layer_idx, layer[0]);
-                path[i - 1] = concatenate_leaves;
+                path[i] = concat_leaves;
             }
         }
         Proof { path }
