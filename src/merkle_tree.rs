@@ -37,7 +37,8 @@ mod tests {
         while (hashed_leaves.len() & (hashed_leaves.len() - 1)) != 0 {
             hashed_leaves.insert(hashed_leaves.len(), Fr::zero());
         }
-        let tree = MerkleTree::build_tree(hashed_leaves);
+        let tree = MerkleTree::build_tree::<H>(hashed_leaves);
+        println!("{:#?}", tree);
         let proof: proof::Proof<H, L> = Proof::find_path(tree.clone(), value_for_proof_hash[0]);
         // Verifier hashes the given path's values and finds the root then compare it original root.
         let verify = Proof::verify(&proof, tree);
@@ -68,7 +69,7 @@ mod tests {
         let value_for_proof_idx = 2;
         hashed_leaves.insert(value_for_proof_idx, value_for_proof_hash[0]);
 
-        // If given values are not enough to fill tree, adds zero until layer reaches enough lenght.
+        // If given values are not enough to fill tree, adds zero until layer reaches enough length.
         loop {
             if hashed_leaves.len() < 2_usize.pow(H.try_into().unwrap()) {
                 hashed_leaves.insert(hashed_leaves.len(), Fr::zero());
@@ -76,7 +77,7 @@ mod tests {
                 break;
             }
         }
-        let tree = MerkleTree::build_tree(hashed_leaves);
+        let tree = MerkleTree::build_tree::<H>(hashed_leaves);
         let proof: proof::Proof<H, L> = Proof::find_path(tree.clone(), value_for_proof_hash[0]);
         // Verifier hashes the given path's values and finds the root then compare it original root.
         let verify = Proof::verify(&proof, tree.clone());
@@ -105,6 +106,6 @@ mod tests {
                 break;
             }
         }
-        let tree = MerkleTree::build_tree(leaves);
+        let tree = MerkleTree::build_tree::<H>(leaves);
     }
 }

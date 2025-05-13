@@ -25,13 +25,12 @@ impl MerkleTree {
     }
 
     /// Builds tree with given Fr elements and finds the root of tree.
-    pub(crate) fn build_tree(hashed_leaves: Vec<Fr>) -> Self {
+    pub(crate) fn build_tree<const H: usize>(hashed_leaves: Vec<Fr>) -> Self {
         let mut node = HashMap::new();
         // 0th level is the leaf level and the max level is the root level.
         let mut layer_idx = 0;
         node.insert(layer_idx, hashed_leaves.clone());
-
-        for i in 0..hashed_leaves.len().checked_ilog2().unwrap() as usize {
+        for i in 0..H {
             layer_idx += 1;
             let mut layer = Vec::new();
 
@@ -47,6 +46,7 @@ impl MerkleTree {
             node.insert(layer_idx, layer.clone());
         }
         let root = node[&(node.len() - 1)][0];
+        println!("{:#?}", node.len());
         MerkleTree { node, root }
     }
 }
